@@ -23,6 +23,11 @@ io.on('connection', function(client){
 		//Send the nickname associated with the client
 		client.nickname = name;
 		client.broadcast.emit("chat", name + " joined the chat");
+
+		//iterate through messages array and emit a message on the connecting client for each one
+		messages.forEach(function(message){
+			client.emit("messages", message.name + ": " + message.data + "<br>");
+		});
 	
 	});
 
@@ -35,10 +40,10 @@ io.on('connection', function(client){
 		client.broadcast.emit("messages", nickname + ": " + message + "<br>");
 
 		//Send the same message back to our client
-		client.emit("messages", nickname + ": " + message);
+		client.emit("messages", nickname + ": " + message + "<br>");
 
 		//When client sends a message call storeMessage
-		storeMessage(name, message);
+		storeMessage(nickname, message);
 	});
 });
 
