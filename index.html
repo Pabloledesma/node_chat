@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Socket.io example</title>
+</head>
+<body>
+
+<h1>Socket.io example</h1>
+
+<div id="messages"></div>
+
+<form id="chat_form">
+	<input type="text" id="chat_input">
+	<button type="submit">Send</button>
+</form>
+
+<div id="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.js"></script>
+<script>
+	var socket = io.connect('http://localhost:8080'),
+		msg = $("#messages");
+		
+
+	$('#chat_form').submit(function(e){
+		var message = $('#chat_input').val();
+		socket.emit('messages', message);
+		e.preventDefault();
+	});
+
+	socket.on('connect', function(data){
+		var status = $('#status');
+		status.append('Connected to the chat');
+		var nickname = prompt('What is you nickname?');
+
+		socket.emit('join', nickname);
+	});
+
+	socket.on('messages', function(data){
+		insertMessage(data);
+	});
+
+	function insertMessage(data){
+		msg.append(data);
+	}
+</script>
+</body>
+</html>
